@@ -45,7 +45,7 @@
                document.getElementById("language-name").value = "";
                document.getElementById("language-desc").value = "";
                document.getElementById("language-uses").value = "";
-               document.getElementById("image").value = "";
+               // document.getElementById("image").value = "";
             })
             .catch(error => {
                console.error("Error uploading file or saving language details:", error);
@@ -68,4 +68,31 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+   
+// Function to retrieve and display language data from Firebase Realtime Database
+function displayLanguageData() {
+   var languagesRef = firebase.database().ref("languages");
+
+   languagesRef.on('child_added', function(childSnapshot) {
+       var languageKey = childSnapshot.key;
+       var languageData = childSnapshot.val();
+
+       // Display language data however you want
+       console.log("Language Key: ", languageKey);
+       console.log("Language Data: ", languageData);
+       // Example: Display in HTML
+       var languageList = document.getElementById('language-list');
+       var languageItem = document.createElement('div');
+       languageItem.innerHTML = `
+           <h3>${languageData.name}</h3>
+           <p>Description: ${languageData.description}</p>
+           <p>Uses: ${languageData.uses}</p>
+           <img src="${languageData.imageURL}" alt="Language Image">
+       `;
+       languageList.appendChild(languageItem);
+   });
+}
+
+
 
