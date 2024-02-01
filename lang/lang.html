@@ -24,6 +24,10 @@
      };
      firebase.initializeApp(firebaseConfig);
     });
+
+    window.onload = function() {
+    displayLanguageData();
+};
    </script>
     <div class="navbar">
         <nav>
@@ -53,6 +57,9 @@
             <br>
             <input type="button" onclick="saveLanguage()" value="Add Language">
         </form>
+        <div id="language-list">
+            <!-- Language data will be displayed here -->
+        </div>
     </div>
    
 </body>
