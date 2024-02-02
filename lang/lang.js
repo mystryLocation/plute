@@ -41,11 +41,12 @@
       
                alert("Language saved successfully!");
       
-               // Clear form fields
-               document.getElementById("language-name").value = "";
-               document.getElementById("language-desc").value = "";
-               document.getElementById("language-uses").value = "";
-               // document.getElementById("image").value = "";
+               // // Clear form fields
+               // document.getElementById("language-name").value = "";
+               // document.getElementById("language-desc").value = "";
+               // document.getElementById("language-uses").value = "";
+               // // document.getElementById("image").value = "";
+               window.location.href = "../lang/lang.html"; 
             })
             .catch(error => {
                console.error("Error uploading file or saving language details:", error);
@@ -79,8 +80,8 @@ function displayLanguageData() {
        var languageData = childSnapshot.val();
 
        // Display language data however you want
-       console.log("Language Key: ", languageKey);
-       console.log("Language Data: ", languageData);
+      //  console.log("Language Key: ", languageKey);
+      //  console.log("Language Data: ", languageData);
        // Example: Display in HTML
        var languageList = document.getElementById('language-list');
        var languageItem = document.createElement('div');
@@ -88,11 +89,13 @@ function displayLanguageData() {
            <h3>${languageData.name}</h3>
            <p>Description: ${languageData.description}</p>
            <p>Uses: ${languageData.uses}</p>
-           <img src="${languageData.imageURL}" alt="Language Image">
+           <img src="${languageData.imageURL}" alt="Language Image" class="language-image">
        `;
        languageList.appendChild(languageItem);
    });
+
 }
+
 
 
 
