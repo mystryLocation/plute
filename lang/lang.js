@@ -90,10 +90,32 @@ function displayLanguageData() {
            <p>Description: ${languageData.description}</p>
            <p>Uses: ${languageData.uses}</p>
            <img src="${languageData.imageURL}" alt="Language Image" class="language-image">
-       `;
+           <button class="delete-button" data-key="${languageKey}">Delete</button>
+           `;
+       
        languageList.appendChild(languageItem);
+
+       // Add event listener to delete button
+       var deleteButton = languageItem.querySelector('.delete-button');
+       deleteButton.addEventListener('click', function() {
+           var key = this.getAttribute('data-key');
+           deleteTechnology(key);
+       });
    });
 
+}
+
+function deleteTechnology(key) {
+   var technologiesRef = firebase.database().ref("languages").child(key);
+   technologiesRef.remove()
+       .then(function() {
+           alert("Language deleted successfully!");
+           window.location.reload();
+       })
+       .catch(function(error) {
+           console.error("Error deleting Language:", error);
+           alert("An error occurred while deleting Language. Please try again.");
+       });
 }
 
 
