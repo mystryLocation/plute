@@ -90,7 +90,9 @@ function displayLanguageData() {
            <p>Description: ${languageData.description}</p>
            <p>Uses: ${languageData.uses}</p>
            <img src="${languageData.imageURL}" alt="Language Image" class="language-image">
+           <button class="edit-button" data-key="${languageKey}">Edit</button>
            <button class="delete-button" data-key="${languageKey}">Delete</button>
+           
            `;
        
        languageList.appendChild(languageItem);
@@ -100,6 +102,13 @@ function displayLanguageData() {
        deleteButton.addEventListener('click', function() {
            var key = this.getAttribute('data-key');
            deleteTechnology(key);
+       });
+
+       // Add event listener to edit button
+       var editButton = languageItem.querySelector('.edit-button');
+       editButton.addEventListener('click', function() {
+           var key = this.getAttribute('data-key');
+           editLanguage(key);
        });
    });
 
@@ -116,6 +125,20 @@ function deleteTechnology(key) {
            console.error("Error deleting Language:", error);
            alert("An error occurred while deleting Language. Please try again.");
        });
+}
+
+function editLanguage(key) {
+    var languageRef = firebase.database().ref("languages").child(key);
+    languageRef.once('value', function(snapshot) {
+        var languageData = snapshot.val();
+        // Here you can populate form fields with the existing data for editing
+        document.getElementById("language-name").value = languageData.name;
+        document.getElementById("language-desc").value = languageData.description;
+        document.getElementById("language-uses").value = languageData.uses;
+        // Handle image URL if needed
+        // Redirect to the page where you have the form for editing
+        window.location.href = "../lang/edit_language.html?key=" + key;
+    });
 }
 
 
