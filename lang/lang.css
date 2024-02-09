@@ -104,4 +104,11 @@
     background-color: red;
     color: white;
     cursor: pointer;
+}.edit-button{
+    margin-top: 10px;
+}
+.edit-button:hover{
+    background-color: green;
+    color: white;
+    cursor: pointer;
 }
