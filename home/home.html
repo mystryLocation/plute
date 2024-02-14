@@ -5,17 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DashBoard</title>
-   <link rel="stylesheet" href="home.css">
-   <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
-   <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
-   <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-storage.js"></script>
-   <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
-   <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
+    <link rel="stylesheet" href="home.css">
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.1/firebase-firestore.js"></script>
     <!-- <script src="home.js"></script> -->
 </head>
 
 <body>
- 
+
     <div class="container">
         <div class="navbar">
             <nav>
@@ -23,7 +23,7 @@
                 <a href="../lang/lang.html">Language</a>
                 <a href="../tech/tech.html">Tech</a>
                 <a href="../framework/framework.html">Framework</a>
-                <a href="../index.html">LogOut</a>
+                <a href="#" id="logout-link">Logout</a>
             </nav>
         </div>
         <div class="content">
@@ -41,31 +41,51 @@
         </div>
     </div>
     <script>
-       
+        var logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the default behavior of the link
+                logout(); // Call the logout function
+            });
+        }
+
+
+        function logout() {
+            firebase.auth().signOut().then(function () {
+                // Sign-out successful, clear session data
+                sessionStorage.removeItem('isLoggedIn');
+                window.location.href = '../index.html'; // Redirect to the login page
+            }).catch(function (error) {
+                // An error happened.
+                console.error(error);
+            });
+        }
+
+
         const firebaseConfig = {
-        apiKey: "AIzaSyB4Po_GC3uih62QXM6KuTUqVOm1UH-SuWA",
-        authDomain: "web-new-401cb.firebaseapp.com",
-        projectId: "web-new-401cb",
-        storageBucket: "web-new-401cb.appspot.com",
-        messagingSenderId: "326958372871",       
-        appId: "1:326958372871:web:d6135d15cde471ec7eb2a2"
+            apiKey: "AIzaSyB4Po_GC3uih62QXM6KuTUqVOm1UH-SuWA",
+            authDomain: "web-new-401cb.firebaseapp.com",
+            projectId: "web-new-401cb",
+            storageBucket: "web-new-401cb.appspot.com",
+            messagingSenderId: "326958372871",
+            appId: "1:326958372871:web:d6135d15cde471ec7eb2a2"
         };
         firebase.initializeApp(firebaseConfig);
 
 
-// Reference to the Firestore database
-const db = firebase.firestore();
+        // Reference to the Firestore database
+        const db = firebase.firestore();
         const storage = firebase.storage();
 
 
-// Get references to HTML elements
-const firstNameElement = document.getElementById('firstName');
-const lastNameElement = document.getElementById('lastName');
-const emailElement = document.getElementById('email');
-const fileInput = document.getElementById('fileInput');
+        // Get references to HTML elements
+        const firstNameElement = document.getElementById('firstName');
+        const lastNameElement = document.getElementById('lastName');
+        const emailElement = document.getElementById('email');
+        const fileInput = document.getElementById('fileInput');
         const userImage = document.getElementById('userImage');
-// Handle user authentication state changes
-firebase.auth().onAuthStateChanged(user => {
+        // Handle user authentication state changes
+        firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 const uid = user.uid;
 
@@ -95,26 +115,26 @@ firebase.auth().onAuthStateChanged(user => {
         });
 
         function uploadImage() {
-    const user = firebase.auth().currentUser;
-    const uid = user.uid;
-    const file = fileInput.files[0];
-    const storageRef = storage.ref().child(`userImages/${uid}`);
+            const user = firebase.auth().currentUser;
+            const uid = user.uid;
+            const file = fileInput.files[0];
+            const storageRef = storage.ref().child(`userImages/${uid}`);
 
-    storageRef.put(file).then(snapshot => {
-        console.log('Uploaded a blob or file!', snapshot);
-        // Once the image is uploaded, update the image source
-        storageRef.getDownloadURL().then(url => {
-            userImage.src = url;
-        }).catch(error => {
-            console.log("Error getting user image:", error);
-        });
-    }).catch(error => {
-        console.error('Error uploading file:', error);
-    });
-}
+            storageRef.put(file).then(snapshot => {
+                console.log('Uploaded a blob or file!', snapshot);
+                // Once the image is uploaded, update the image source
+                storageRef.getDownloadURL().then(url => {
+                    userImage.src = url;
+                }).catch(error => {
+                    console.log("Error getting user image:", error);
+                });
+            }).catch(error => {
+                console.error('Error uploading file:', error);
+            });
+        }
 
-        
-            </script>
+
+    </script>
 </body>
 
 </html>

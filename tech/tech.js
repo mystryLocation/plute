@@ -1,3 +1,22 @@
+var logoutLink = document.getElementById('logout-link');
+if (logoutLink) {
+    logoutLink.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the default behavior of the link
+        logout(); // Call the logout function
+    });
+}
+
+
+function logout() {
+firebase.auth().signOut().then(function() {
+    // Sign-out successful, clear session data
+    sessionStorage.removeItem('isLoggedIn');
+    window.location.href = '../index.html'; // Redirect to the login page
+}).catch(function(error) {
+    // An error happened.
+    console.error(error);
+});
+}
 
 function saveTechnology() {
     var technologyName = document.getElementById("technology-name").value;
@@ -71,6 +90,7 @@ function previewImages(event) {
 }
 
 // Function to retrieve and display technology data from Firebase Realtime Database
+// Function to retrieve and display technology data from Firebase Realtime Database
 function displayTechnologyData() {
     var technologiesRef = firebase.database().ref("technologies");
 
@@ -87,6 +107,7 @@ function displayTechnologyData() {
             <p>Languages Used: ${technologyData.languagesUsed}</p>
             <p>Frameworks Used: ${technologyData.frameworksUsed}</p>
             <img src="${technologyData.imageURL}" alt="Technology Image" class="technology-image">
+            <button class="edit-button" data-key="${technologyKey}">Edit</button>
             <button class="delete-button" data-key="${technologyKey}">Delete</button>
         `;
         technologyList.appendChild(technologyItem);
@@ -97,7 +118,19 @@ function displayTechnologyData() {
             var key = this.getAttribute('data-key');
             deleteTechnology(key);
         });
+
+        // Add event listener to edit button
+        var editButton = technologyItem.querySelector('.edit-button');
+        editButton.addEventListener('click', function() {
+            var key = this.getAttribute('data-key');
+            editTechnology(key);
+        });
     });
+}
+
+function editTechnology(key) {
+    // Redirect to the edit technology page with the key as a query parameter
+    window.location.href = "edit_technology.html?key=" + key;
 }
 
 function deleteTechnology(key) {
