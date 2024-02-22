@@ -32,7 +32,13 @@ function saveTechnology() {
 
     const storageRef = firebase.storage().ref();
     const technologiesRef = firebase.database().ref("technologies");
-    
+
+    // Array to store image URLs
+    var imageURLs = [];
+
+    // Counter to keep track of image order
+    var imageIndex = 0;
+
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const name = +new Date() + "-" + file.name;
@@ -44,29 +50,43 @@ function saveTechnology() {
         task
             .then(snapshot => snapshot.ref.getDownloadURL())
             .then(url => {
-                // Save technology data with image URL to Realtime Database
-                var technologyData = {
-                    name: technologyName, // Set the technology name explicitly
-                    description: technologyDesc,
-                    languagesUsed: technologyLanguages,
-                    frameworksUsed: technologyFrameworks,
-                    imageURL: url
-                };
+                // Push the URL to the array
+                imageURLs.push({ index: imageIndex++, url: url });
 
-                // Generate a new unique key for the technology entry
-                var newTechnologyRef = technologiesRef.push();
+                // Check if all images have been processed
+                if (imageURLs.length === files.length) {
+                    // Save technology data with image URLs to Realtime Database
+                    var technologyData = {
+                        name: technologyName,
+                        description: technologyDesc,
+                        languagesUsed: technologyLanguages,
+                        frameworksUsed: technologyFrameworks,
+                        images: imageURLs
+                    };
 
-                // Set the technology data with the new key
-                newTechnologyRef.set(technologyData);
+                    // Generate a new unique key for the technology entry
+                    var newTechnologyRef = technologiesRef.push();
+
+                    // Set the technology data with the new key
+                    newTechnologyRef.set(technologyData);
+
+                    // Reset the input fields
+                    document.getElementById("technology-name").value = '';
+                    document.getElementById("technology-desc").value = '';
+                    document.getElementById("technology-languages").value = '';
+                    document.getElementById("technology-frameworks").value = '';
+                    document.getElementById("technology-images").value = '';
+
+                    alert("Technologies saved successfully!");
+                }
             })
             .catch(error => {
                 console.error("Error uploading file or saving technology details:", error);
                 alert("An error occurred. Please try again.");
             });
     }
-
-    alert("Technologies saved successfully!");
 }
+
 
 
 function previewImages(event) {
@@ -106,11 +126,21 @@ function displayTechnologyData() {
             <p>Description: ${technologyData.description}</p>
             <p>Languages Used: ${technologyData.languagesUsed}</p>
             <p>Frameworks Used: ${technologyData.frameworksUsed}</p>
-            <img src="${technologyData.imageURL}" alt="Technology Image" class="technology-image">
+            <div id="image-container-${technologyKey}" class="image-container"></div>
             <button class="edit-button" data-key="${technologyKey}">Edit</button>
             <button class="delete-button" data-key="${technologyKey}">Delete</button>
         `;
         technologyList.appendChild(technologyItem);
+
+        // Display images
+        var imageContainer = document.getElementById(`image-container-${technologyKey}`);
+        technologyData.images.forEach(function(image, index) {
+            var imgElement = document.createElement('img');
+            imgElement.src = image.url;
+            imgElement.alt = `Image ${index + 1}`;
+            imgElement.classList.add('technology-image');
+            imageContainer.appendChild(imgElement);
+        });
 
         // Add event listener to delete button
         var deleteButton = technologyItem.querySelector('.delete-button');
@@ -127,6 +157,7 @@ function displayTechnologyData() {
         });
     });
 }
+
 
 function editTechnology(key) {
     // Redirect to the edit technology page with the key as a query parameter
