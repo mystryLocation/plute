@@ -29,3 +29,24 @@ button[type="submit"] {
 button[type="submit"]:hover {
   background-color: #45a049;
 }
+
+/* Image container styles */
+.image-container {
+  margin-top: 20px;
+}
+
+.image-item {
+  width: 200px; /* Set width for each image container */
+  height: 200px; /* Set height for each image container */
+  margin-right: 20px; /* Margin between image containers */
+  margin-bottom: 20px; /* Bottom margin for spacing */
+  display: inline-block; /* Display as inline block */
+  vertical-align: top; /* Align to the top */
+  overflow: hidden; /* Hide overflow content */
+}
+
+.image-item img {
+  width: 100px; /* Make the image fill the container */
+  height: 100px; /* Make the image fill the container */
+  object-fit: cover; /* Ensure the image covers the container */
+}
